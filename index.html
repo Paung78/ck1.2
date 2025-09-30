@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+  <title>Dark Fire Login</title> 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"/> 
+  <style> 
+    * { margin: 0; padding: 0; box-sizing: border-box; } 
+    body { 
+      background-color: #121212; 
+      color: white; 
+      font-family: 'Poppins', sans-serif; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      text-align: center; 
+      padding: 10px; 
+      position: relative; 
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+    } 
+    .container { 
+      width: 90%; 
+      max-width: 400px; 
+      padding: 25px; 
+      background: rgba(26, 32, 44, 0.9); 
+      border-radius: 15px; 
+      box-shadow: 0 0 25px rgba(101, 73, 255, 0.5); 
+      position: relative; 
+      backdrop-filter: blur(5px); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+    } 
+
+    h1 { 
+      font-size: 26px; 
+      color: #6e45e2; 
+      font-weight: bold; 
+      text-shadow: 0 0 10px rgba(110, 69, 226, 0.5); 
+      margin-bottom: 15px; 
+      background: linear-gradient(to right, #6e45e2, #88d3ce); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    } 
+
+    input { 
+      width: 100%; 
+      padding: 12px; 
+      margin: 10px 0; 
+      border: 2px solid #6e45e2; 
+      border-radius: 8px; 
+      background: rgba(18, 18, 18, 0.8); 
+      color: white; 
+      text-align: center; 
+      font-size: 16px; 
+      box-shadow: 0 0 10px rgba(110, 69, 226, 0.3); 
+      transition: all 0.3s ease; 
+    } 
+
+    input:focus { 
+      outline: none; 
+      border-color: #88d3ce; 
+      box-shadow: 0 0 15px rgba(136, 211, 206, 0.5); 
+    } 
+
+    button { 
+      width: 100%; 
+      padding: 12px; 
+      border: none; 
+      border-radius: 8px; 
+      background: linear-gradient(to right, #6e45e2, #88d3ce); 
+      color: white; 
+      font-size: 18px; 
+      cursor: pointer; 
+      box-shadow: 0 0 15px rgba(110, 69, 226, 0.4); 
+      transition: all 0.3s ease; 
+      margin-top: 10px; 
+      font-weight: bold; 
+    } 
+
+    button:hover { 
+      background: linear-gradient(to right, #5d36d1, #7ac5c0); 
+      box-shadow: 0 0 20px rgba(110, 69, 226, 0.6); 
+      transform: translateY(-2px); 
+    } 
+
+    .error { 
+      color: #ff4d4d; 
+      margin-top: 10px; 
+      display: none; 
+      text-shadow: 0 0 5px rgba(255, 77, 77, 0.3); 
+    } 
+
+    .success { 
+      color: #4dff88; 
+      margin-top: 10px; 
+      display: none; 
+      font-weight: bold; 
+      text-shadow: 0 0 10px rgba(77, 255, 136, 0.3); 
+    } 
+
+    #uid-verification, #prediction-page, #timeout-page { 
+      display: none; 
+    } 
+
+    .box { 
+      display: inline-block; 
+      padding: 8px 12px; 
+      font-size: 18px; 
+      font-weight: bold; 
+      margin: 5px; 
+      border-radius: 5px; 
+      border: 2px solid #6e45e2; 
+      text-shadow: 0 0 10px rgba(110, 69, 226, 0.5); 
+      background: rgba(18, 18, 18, 0.5); 
+    } 
+
+    .period-box { color: #ffd700; } 
+    .big { color: #88d3ce; } 
+    .small { color: #ffa447; } 
+    .number-box { color: #6e45e2; } 
+
+    .predict-btn { 
+      padding: 10px 15px; 
+      font-size: 14px; 
+      background: white; 
+      color: #6e45e2; 
+      font-weight: bold; 
+      border: none; 
+      cursor: pointer; 
+      margin-top: 15px; 
+      border-radius: 5px; 
+      transition: all 0.3s ease; 
+    } 
+
+    .predict-btn:hover { 
+      background: #f0f0f0; 
+      transform: scale(1.05); 
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); 
+    } 
+
+    #live-result { 
+      font-size: 14px; 
+      font-weight: bold; 
+      color: #88d3ce; 
+      margin-top: 10px; 
+    } 
+
+    .extra-buttons a button { 
+      margin-top: 12px; 
+      width: 100%; 
+      padding: 12px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: all 0.3s ease; 
+    } 
+
+    .register-btn { 
+      background: linear-gradient(to right, #6e45e2, #88d3ce); 
+      color: white; 
+    } 
+
+    .telegram-btn { 
+      background: linear-gradient(to right, #1e88e5, #0d47a1); 
+      color: white; 
+    } 
+
+    .video-btn { 
+      background: linear-gradient(to right, #ff416c, #ff4b2b); 
+      color: white; 
+    } 
+
+    .admin-btn { 
+      background: linear-gradient(to right, #654ea3, #eaafc8); 
+      color: white; 
+    } 
+
+    .extra-buttons a button:hover { 
+      transform: translateY(-3px); 
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    } 
+
+    .loading { 
+      display: inline-block; 
+      width: 20px; 
+      height: 20px; 
+      border: 3px solid rgba(255,255,255,.1); 
+      border-radius: 50%; 
+      border-top-color: #6e45e2; 
+      animation: spin 1s ease-in-out infinite; 
+      margin-left: 10px; 
+    } 
+
+    @keyframes spin { 
+      to { transform: rotate(360deg); } 
+    } 
+
+    .time-display { 
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      font-size: 14px; 
+      color: #88d3ce; 
+      text-shadow: 0 0 5px rgba(136, 211, 206, 0.5); 
+      background: rgba(26, 32, 44, 0.7); 
+      padding: 5px 10px; 
+      border-radius: 20px; 
+      border: 1px solid rgba(136, 211, 206, 0.3); 
+    } 
+
+    #timeout-page { 
+      text-align: center; 
+    } 
+
+    #timeout-page h1 { 
+      color: #ff4d4d; 
+      text-shadow: 0 0 10px rgba(255, 77, 77, 0.5); 
+      background: linear-gradient(to right, #ff4d4d, #ff7676); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    } 
+
+    .getout-btn { 
+      background: linear-gradient(to right, #ff4d4d, #ff7676); 
+      color: white; 
+      font-weight: bold; 
+      margin-top: 20px; 
+      box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); 
+    } 
+
+    .getout-btn:hover { 
+      background: linear-gradient(to right, #ff3636, #ff6363); 
+      transform: translateY(-2px); 
+    } 
+  </style> 
+ </head> 
+ <body> 
+  <div class="time-display" id="time-display">00:00</div> 
+
+  <div id="login-box" class="container"> 
+    <h1>Enter Passcode</h1> 
+    <input type="password" id="password" placeholder="Enter Key"> 
+    <button onclick="checkLogin()">Unlock</button> 
+    <p class="error" id="error-message">Wrong Key! Try Again.</p> 
+    <div class="extra-buttons"> 
+      <a href="https://cklottery.cc/#/register?invitationCode=81487219676" target="_blank"> 
+        <button class="register-btn">Register</button> 
+      </a> 
+      <a href="https://t.me/PGmoney67800" target="_blank"> 
+        <button class="telegram-btn">Telegram Channel</button> 
+      </a> 
+      <a href="https://t.me/colourtradingincome2" target="_blank"> 
+        <button class="video-btn">Deposite / Withdraw Video</button> 
+      </a> 
+      <a href="https://t.me/paunggyi111" target="_blank"> 
+        <button class="admin-btn">Admin Contact</button> 
+      </a> 
+    </div> 
+  </div> 
+
+  <div id="uid-verification" class="container"> 
+    <h1>Game UID Verification</h1> 
+    <input type="text" id="uid" placeholder="Enter UID (4-6 digits)" maxlength="6"> 
+    <button onclick="verifyUID()">Verify</button> 
+    <p class="error" id="uid-error">UID must be 4-6 digits!</p> 
+    <p class="success" id="uid-success">Verification Successful! <span class="loading"></span></p> 
+  </div> 
+
+  <div id="prediction-page" class="container"> 
+    <h1>CRD BY PYAUNGGYI</h1> 
+    <p id="result" class="result">PERIOD: <span class="box period-box">--</span></p> 
+    <p id="signal" class="signal">TRX SIGNAL: <span class="box">--</span></p> 
+    <p id="prediction" class="prediction">PREDICTED NUMBERS: <span class="box number-box">--/--</span></p> 
+    <p id="live-result">LIVE UPDATING...</p> 
+    <button class="predict-btn" onclick="fetchPrediction()">Predict</button> 
+  </div> 
+
+  <div id="timeout-page" class="container"> 
+    <h1>Session Expired</h1> 
+    <p>Your 10-minute session has ended.</p> 
+    <button class="getout-btn" onclick="resetApplication()">GET OUT</button> 
+  </div> 
+
+  <script> 
+    // Time tracking variables 
+    let seconds = 0; 
+    let timerInterval; 
+    let predictionInterval; // Variable to hold the prediction interval ID 
+    const MAX_TIME = 600; // 10 minutes in seconds 
+
+    // Start timer when page loads 
+    window.onload = function() { 
+      updateTimeDisplay(); 
+    }; 
+
+    function updateTimeDisplay() { 
+      const minutes = Math.floor(seconds / 60); 
+      const remainingSeconds = seconds % 60; 
+      document.getElementById("time-display").textContent = 
+        `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`; 
+    } 
+
+    function startTimer() { 
+      clearInterval(timerInterval); // Clear any existing timer 
+      seconds = 0; 
+      updateTimeDisplay(); 
+
+      timerInterval = setInterval(function() { 
+        seconds++; 
+        updateTimeDisplay(); 
+
+        if (seconds >= MAX_TIME) { 
+          clearInterval(timerInterval); 
+          clearInterval(predictionInterval); // Stop fetching predictions on timeout 
+          document.getElementById("prediction-page").style.display = "none"; 
+          document.getElementById("timeout-page").style.display = "block"; 
+        } 
+      }, 1000); 
+    } 
+
+    function resetApplication() { 
+      location.reload(); // Reload the page to start fresh 
+    } 
+
+    function checkLogin() { 
+      var pass = document.getElementById("password").value; 
+      if (pass === "PYAUNG") { 
+        document.getElementById("login-box").style.display = "none"; 
+        document.getElementById("uid-verification").style.display = "block"; 
+        document.getElementById("error-message").style.display = "none"; // Hide error on success
+      } else { 
+        document.getElementById("error-message").style.display = "block"; 
+      } 
+    } 
+
+    function verifyUID() { 
+      const uid = document.getElementById("uid").value; 
+      const uidError = document.getElementById("uid-error"); 
+      const uidSuccess = document.getElementById("uid-success"); 
+
+      // Hide previous messages 
+      uidError.style.display = "none"; 
+      uidSuccess.style.display = "none"; 
+
+      // Check UID length (4-6 digits) 
+      if (uid.length < 4 || uid.length > 6 || !/^\d+$/.test(uid)) { 
+        uidError.style.display = "block"; 
+        return; 
+      } 
+
+      // Show success message 
+      uidSuccess.style.display = "block"; 
+
+      // After 3 seconds, proceed to prediction page 
+      setTimeout(() => { 
+        document.getElementById("uid-verification").style.display = "none"; 
+        document.getElementById("prediction-page").style.display = "block"; 
+        startTimer(); // Start the 10-minute countdown 
+        fetchPrediction(); 
+        // Start the prediction fetching interval only after successful verification
+        predictionInterval = setInterval(fetchPrediction, 10000); 
+      }, 3000); 
+    } 
+
+    const API_URL = 'https://api.bdg88zf.com/api/webapi/GetGameIssue'; 
+    const REQUEST_DATA = { 
+      typeId: 1, 
+      language: 0, 
+      random: "e7fe6c090da2495ab8290dac551ef1ed", 
+      signature: "1F390E2B2D8A55D693E57FD905AE73A7", 
+      timestamp: 1723726679 
+    }; 
+
+    let periodResults = {}; 
+
+    function fetchPrediction() { 
+      fetch(API_URL, { 
+        method: "POST", 
+        headers: { 
+          "Content-Type": "application/json;charset=UTF-8" 
+        }, 
+        body: JSON.stringify(REQUEST_DATA) 
+      }) 
+      .then(response => response.json()) 
+      .then(data => { 
+        if (data && data.data) { 
+          let issueNumber = data.data.issueNumber || "Unknown"; 
+          if (!periodResults[issueNumber]) { 
+            let num1 = Math.floor(Math.random() * 10); 
+            let num2 = (num1 + 3) % 10; 
+            let sumDigits = issueNumber.split('').reduce((acc, num) => acc + parseInt(num), 0); 
+            let bigSmallPrediction = sumDigits % 2 === 0 ? "Big" : "Small"; 
+            periodResults[issueNumber] = { 
+              bigSmallPrediction, 
+              predictedNumbers: `${num1}/${num2}` 
+            }; 
+          } 
+
+          let { bigSmallPrediction, predictedNumbers } = periodResults[issueNumber]; 
+
+          document.getElementById("result").innerHTML = `PERIOD: <span class="box period-box">${issueNumber}</span>`; 
+          document.getElementById("signal").innerHTML = `TRX SIGNAL: <span class="box ${bigSmallPrediction.toLowerCase()}">${bigSmallPrediction}</span>`; 
+          document.getElementById("prediction").innerHTML = `PREDICTED NUMBERS: <span class="box number-box">${predictedNumbers}</span>`; 
+          document.getElementById("live-result").innerHTML = "✅ LIVE DATA UPDATED!"; 
+        } else { 
+          document.getElementById("live-result").innerHTML = "⚠️ ERROR! Could not fetch data."; 
+        } 
+      }) 
+      .catch(error => { 
+        document.getElementById("live-result").innerHTML = "⚠️ ERROR! Network or API issue."; 
+        console.error("API Fetch Error:", error); 
+      }); 
+    } 
+
+    // Removed: setInterval(fetchPrediction, 10000); 
+    // This is now started inside verifyUID() after successful login.
+
+  </script> 
+ </body> 
+</html>
