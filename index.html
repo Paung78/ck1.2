@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
   <title>Dark Fire Login</title> 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"/> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style> 
     * { margin: 0; padding: 0; box-sizing: border-box; } 
     body { 
@@ -99,7 +102,7 @@
       text-shadow: 0 0 10px rgba(77, 255, 136, 0.3); 
     } 
 
-    #uid-verification, #prediction-page, #timeout-page { 
+    #uid-verification, #prediction-page, #timeout-page, #key-activation { 
       display: none; 
     } 
 
@@ -234,33 +237,131 @@
     .getout-btn:hover { 
       background: linear-gradient(to right, #ff3636, #ff6363); 
       transform: translateY(-2px); 
-    } 
+    }
+
+    /* HTML 2 Styles */
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 32px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(110, 69, 226, 0.15);
+      transform: rotate(10deg);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #b0b0d0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #b0b0d0;
+    }
+
+    #timer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #88d3ce;
+      padding: 12px;
+      background: rgba(18, 18, 18, 0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(136, 211, 206, 0.3);
+    }
+
+    .success-icon {
+      color: #4dff88;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+    }
   </style> 
  </head> 
  <body> 
   <div class="time-display" id="time-display">00:00</div> 
 
-  <div id="login-box" class="container"> 
-    <h1>Enter Passcode</h1> 
-    <input type="password" id="password" placeholder="Enter Key"> 
-    <button onclick="checkLogin()">Unlock</button> 
-    <p class="error" id="error-message">Wrong Key! Try Again.</p> 
-    <div class="extra-buttons"> 
-      <a href="https://cklottery.cc/#/register?invitationCode=81487219676" target="_blank"> 
-        <button class="register-btn">Register</button> 
-      </a> 
-      <a href="https://t.me/PGmoney67800" target="_blank"> 
-        <button class="telegram-btn">Telegram Channel</button> 
-      </a> 
-      <a href="https://t.me/colourtradingincome2" target="_blank"> 
-        <button class="video-btn">Deposite / Withdraw Video</button> 
-      </a> 
-      <a href="https://t.me/paunggyi111" target="_blank"> 
-        <button class="admin-btn">Admin Contact</button> 
-      </a> 
-    </div> 
-  </div> 
+  <!-- Key Activation Page (HTML 2 System) -->
+  <div id="key-activation" class="container">
+    <div class="badge">PREMIUM</div>
+    
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-robot"></i>
+      </div>
+      <h1>Lottery Tricks Ai Predition</h1>
+      <div class="subtitle">Intelligent Forecast System</div>
+    </div>
+    
+    <div class="form-group">
+      <label for="keyInput">Access Key</label>
+      <input type="text" id="keyInput" placeholder="Enter your premium access key">
+    </div>
+    
+    <button onclick="activateKey()">
+      <i class="fas fa-key"></i> ACTIVATE ACCESS
+    </button>
+    
+    <div id="timer"></div>
+    
+    <div id="content">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div style="margin-bottom: 15px; font-weight: 500;">Premium Access Granted!</div>
+      <button onclick="showUidVerification()" style="background: linear-gradient(135deg, #4dff88 0%, #27ae60 100%);">
+        <i class="fas fa-chart-line"></i> VIEW PREDICTIONS
+      </button>
+    </div>
 
+    <div class="extra-buttons">
+      <a href="https://cklottery.cc/#/register?invitationCode=81487219676" target="_blank">
+        <button class="register-btn">Register</button>
+      </a>
+      <a href="https://t.me/PGmoney67800" target="_blank">
+        <button class="telegram-btn">Telegram Channel</button>
+      </a>
+      <a href="https://t.me/colourtradingincome2" target="_blank">
+        <button class="video-btn">Deposite / Withdraw Video</button>
+      </a>
+      <a href="https://t.me/paunggyi111" target="_blank">
+        <button class="admin-btn">Admin Contact</button>
+      </a>
+    </div>
+    
+    <div class="footer" style="margin-top: 25px; text-align: center; font-size: 12px; color: #95a5a6;">CREDITS BY PYAUNGGYI</div>
+  </div>
+
+  <!-- UID Verification -->
   <div id="uid-verification" class="container"> 
     <h1>Game UID Verification</h1> 
     <input type="text" id="uid" placeholder="Enter UID (4-6 digits)" maxlength="6"> 
@@ -269,6 +370,7 @@
     <p class="success" id="uid-success">Verification Successful! <span class="loading"></span></p> 
   </div> 
 
+  <!-- Prediction Page -->
   <div id="prediction-page" class="container"> 
     <h1>CRD BY PYAUNGGYI</h1> 
     <p id="result" class="result">PERIOD: <span class="box period-box">--</span></p> 
@@ -278,146 +380,242 @@
     <button class="predict-btn" onclick="fetchPrediction()">Predict</button> 
   </div> 
 
+  <!-- Timeout Page -->
   <div id="timeout-page" class="container"> 
     <h1>Session Expired</h1> 
-    <p>Your 10-minute session has ended.</p> 
+    <p>Your premium session has ended.</p> 
     <button class="getout-btn" onclick="resetApplication()">GET OUT</button> 
   </div> 
 
-  <script> 
-    // Time tracking variables 
-    let seconds = 0; 
-    let timerInterval; 
-    let predictionInterval; // Variable to hold the prediction interval ID 
-    const MAX_TIME = 600; // 10 minutes in seconds 
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy3QvFmhKiOX38MZiINfZq2yYXGhb7uL8",
+      authDomain: "ck-adm.firebaseapp.com",
+      databaseURL: "https://ck-adm-default-rtdb.europe-west1.firebasedatabase.app/",
+      projectId: "ck-adm",
+      storageBucket: "ck-adm.appspot.com",
+      messagingSenderId: "192822942347",
+      appId: "1:192822942347:web:f27eee393e16c84544528e"
+    };
 
-    // Start timer when page loads 
-    window.onload = function() { 
-      updateTimeDisplay(); 
-    }; 
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    function updateTimeDisplay() { 
-      const minutes = Math.floor(seconds / 60); 
-      const remainingSeconds = seconds % 60; 
-      document.getElementById("time-display").textContent = 
-        `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`; 
-    } 
+    // Global Variables
+    let expireTime = parseInt(localStorage.getItem('expireTime')) || 0;
+    let timerInterval;
+    let predictionInterval;
+    let seconds = 0;
+    const MAX_TIME = 600; // 10 minutes in seconds
 
-    function startTimer() { 
-      clearInterval(timerInterval); // Clear any existing timer 
-      seconds = 0; 
-      updateTimeDisplay(); 
+    // Start when page loads
+    window.onload = function() {
+      // Show key activation page first
+      document.getElementById("key-activation").style.display = "block";
+      
+      // Check if there's an active session
+      if (expireTime && Date.now() < expireTime) {
+        document.getElementById('content').style.display = 'block';
+        startSession();
+      } else {
+        // If no active session, clear any stored data
+        localStorage.removeItem('expireTime');
+      }
+      
+      updateTimeDisplay();
+    };
 
-      timerInterval = setInterval(function() { 
-        seconds++; 
-        updateTimeDisplay(); 
+    function updateTimeDisplay() {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      document.getElementById("time-display").textContent =
+        `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
 
-        if (seconds >= MAX_TIME) { 
-          clearInterval(timerInterval); 
-          clearInterval(predictionInterval); // Stop fetching predictions on timeout 
-          document.getElementById("prediction-page").style.display = "none"; 
-          document.getElementById("timeout-page").style.display = "block"; 
-        } 
-      }, 1000); 
-    } 
+    function startTimer() {
+      clearInterval(timerInterval);
+      seconds = 0;
+      updateTimeDisplay();
 
-    function resetApplication() { 
-      location.reload(); // Reload the page to start fresh 
-    } 
+      timerInterval = setInterval(function() {
+        seconds++;
+        updateTimeDisplay();
 
-    function checkLogin() { 
-      var pass = document.getElementById("password").value; 
-      if (pass === "PYAUNG") { 
-        document.getElementById("login-box").style.display = "none"; 
-        document.getElementById("uid-verification").style.display = "block"; 
-        document.getElementById("error-message").style.display = "none"; // Hide error on success
-      } else { 
-        document.getElementById("error-message").style.display = "block"; 
-      } 
-    } 
+        if (seconds >= MAX_TIME) {
+          clearInterval(timerInterval);
+          clearInterval(predictionInterval);
+          document.getElementById("prediction-page").style.display = "none";
+          document.getElementById("timeout-page").style.display = "block";
+        }
+      }, 1000);
+    }
 
-    function verifyUID() { 
-      const uid = document.getElementById("uid").value; 
-      const uidError = document.getElementById("uid-error"); 
-      const uidSuccess = document.getElementById("uid-success"); 
+    function resetApplication() {
+      localStorage.removeItem('expireTime');
+      location.reload();
+    }
+
+    // HTML 2 Key Activation Functions
+    function activateKey() {
+      const key = document.getElementById('keyInput').value.trim().toUpperCase();
+      if (!key) {
+        alert("Please enter a key");
+        return;
+      }
+
+      // Show loading state
+      const btn = document.querySelector('#key-activation button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
+      btn.disabled = true;
+
+      db.ref('keys/' + key).once('value').then(snapshot => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          if (data.used) {
+            alert("This key is already used!");
+            return;
+          }
+          
+          const extraTime = data.duration * 60 * 1000;
+          expireTime = Math.max(Date.now(), expireTime) + extraTime;
+          localStorage.setItem('expireTime', expireTime);
+          
+          db.ref('keys/' + key).update({ used: true });
+          
+          // Show success
+          document.getElementById('content').style.display = 'block';
+          alert(`Key Activated! Added ${data.duration} minutes`);
+          startSession();
+        } else {
+          alert("Invalid Key");
+        }
+      }).catch(error => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert("Connection error. Please try again.");
+        console.error(error);
+      });
+    }
+
+    function startSession() {
+      if (timerInterval) clearInterval(timerInterval);
+      updatePremiumTimer();
+      timerInterval = setInterval(updatePremiumTimer, 1000);
+    }
+
+    function updatePremiumTimer() {
+      const now = Date.now();
+      const remaining = expireTime - now;
+      
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('timer').textContent = "Premium expired";
+        document.getElementById('content').style.display = 'none';
+        localStorage.removeItem('expireTime');
+        
+        // Show timeout page if user was in prediction mode
+        if (document.getElementById("prediction-page").style.display === "block") {
+          document.getElementById("prediction-page").style.display = "none";
+          document.getElementById("timeout-page").style.display = "block";
+        }
+        return;
+      }
+      
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+      
+      document.getElementById('timer').textContent = `Premium expires in: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function showUidVerification() {
+      document.getElementById("key-activation").style.display = "none";
+      document.getElementById("uid-verification").style.display = "block";
+    }
+
+    function verifyUID() {
+      const uid = document.getElementById("uid").value;
+      const uidError = document.getElementById("uid-error");
+      const uidSuccess = document.getElementById("uid-success");
 
       // Hide previous messages 
-      uidError.style.display = "none"; 
-      uidSuccess.style.display = "none"; 
+      uidError.style.display = "none";
+      uidSuccess.style.display = "none";
 
       // Check UID length (4-6 digits) 
-      if (uid.length < 4 || uid.length > 6 || !/^\d+$/.test(uid)) { 
-        uidError.style.display = "block"; 
-        return; 
-      } 
+      if (uid.length < 4 || uid.length > 6 || !/^\d+$/.test(uid)) {
+        uidError.style.display = "block";
+        return;
+      }
 
       // Show success message 
-      uidSuccess.style.display = "block"; 
+      uidSuccess.style.display = "block";
 
       // After 3 seconds, proceed to prediction page 
-      setTimeout(() => { 
-        document.getElementById("uid-verification").style.display = "none"; 
-        document.getElementById("prediction-page").style.display = "block"; 
-        startTimer(); // Start the 10-minute countdown 
-        fetchPrediction(); 
-        // Start the prediction fetching interval only after successful verification
-        predictionInterval = setInterval(fetchPrediction, 10000); 
-      }, 3000); 
-    } 
+      setTimeout(() => {
+        document.getElementById("uid-verification").style.display = "none";
+        document.getElementById("prediction-page").style.display = "block";
+        startTimer();
+        fetchPrediction();
+        predictionInterval = setInterval(fetchPrediction, 10000);
+      }, 3000);
+    }
 
-    const API_URL = 'https://api.bdg88zf.com/api/webapi/GetGameIssue'; 
-    const REQUEST_DATA = { 
-      typeId: 1, 
-      language: 0, 
-      random: "e7fe6c090da2495ab8290dac551ef1ed", 
-      signature: "1F390E2B2D8A55D693E57FD905AE73A7", 
-      timestamp: 1723726679 
-    }; 
+    const API_URL = 'https://api.bdg88zf.com/api/webapi/GetGameIssue';
+    const REQUEST_DATA = {
+      typeId: 1,
+      language: 0,
+      random: "e7fe6c090da2495ab8290dac551ef1ed",
+      signature: "1F390E2B2D8A55D693E57FD905AE73A7",
+      timestamp: 1723726679
+    };
 
-    let periodResults = {}; 
+    let periodResults = {};
 
-    function fetchPrediction() { 
-      fetch(API_URL, { 
-        method: "POST", 
-        headers: { 
-          "Content-Type": "application/json;charset=UTF-8" 
-        }, 
-        body: JSON.stringify(REQUEST_DATA) 
-      }) 
-      .then(response => response.json()) 
-      .then(data => { 
-        if (data && data.data) { 
-          let issueNumber = data.data.issueNumber || "Unknown"; 
-          if (!periodResults[issueNumber]) { 
-            let num1 = Math.floor(Math.random() * 10); 
-            let num2 = (num1 + 3) % 10; 
-            let sumDigits = issueNumber.split('').reduce((acc, num) => acc + parseInt(num), 0); 
-            let bigSmallPrediction = sumDigits % 2 === 0 ? "Big" : "Small"; 
-            periodResults[issueNumber] = { 
-              bigSmallPrediction, 
-              predictedNumbers: `${num1}/${num2}` 
-            }; 
-          } 
+    function fetchPrediction() {
+      fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=UTF-8"
+        },
+        body: JSON.stringify(REQUEST_DATA)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.data) {
+          let issueNumber = data.data.issueNumber || "Unknown";
+          if (!periodResults[issueNumber]) {
+            let num1 = Math.floor(Math.random() * 10);
+            let num2 = (num1 + 3) % 10;
+            let sumDigits = issueNumber.split('').reduce((acc, num) => acc + parseInt(num), 0);
+            let bigSmallPrediction = sumDigits % 2 === 0 ? "Big" : "Small";
+            periodResults[issueNumber] = {
+              bigSmallPrediction,
+              predictedNumbers: `${num1}/${num2}`
+            };
+          }
 
-          let { bigSmallPrediction, predictedNumbers } = periodResults[issueNumber]; 
+          let { bigSmallPrediction, predictedNumbers } = periodResults[issueNumber];
 
-          document.getElementById("result").innerHTML = `PERIOD: <span class="box period-box">${issueNumber}</span>`; 
-          document.getElementById("signal").innerHTML = `TRX SIGNAL: <span class="box ${bigSmallPrediction.toLowerCase()}">${bigSmallPrediction}</span>`; 
-          document.getElementById("prediction").innerHTML = `PREDICTED NUMBERS: <span class="box number-box">${predictedNumbers}</span>`; 
-          document.getElementById("live-result").innerHTML = "✅ LIVE DATA UPDATED!"; 
-        } else { 
-          document.getElementById("live-result").innerHTML = "⚠️ ERROR! Could not fetch data."; 
-        } 
-      }) 
-      .catch(error => { 
-        document.getElementById("live-result").innerHTML = "⚠️ ERROR! Network or API issue."; 
-        console.error("API Fetch Error:", error); 
-      }); 
-    } 
-
-    // Removed: setInterval(fetchPrediction, 10000); 
-    // This is now started inside verifyUID() after successful login.
-
+          document.getElementById("result").innerHTML = `PERIOD: <span class="box period-box">${issueNumber}</span>`;
+          document.getElementById("signal").innerHTML = `TRX SIGNAL: <span class="box ${bigSmallPrediction.toLowerCase()}">${bigSmallPrediction}</span>`;
+          document.getElementById("prediction").innerHTML = `PREDICTED NUMBERS: <span class="box number-box">${predictedNumbers}</span>`;
+          document.getElementById("live-result").innerHTML = "✅ LIVE DATA UPDATED!";
+        } else {
+          document.getElementById("live-result").innerHTML = "⚠️ ERROR! Could not fetch data.";
+        }
+      })
+      .catch(error => {
+        document.getElementById("live-result").innerHTML = "⚠️ ERROR! Network or API issue.";
+        console.error("API Fetch Error:", error);
+      });
+    }
   </script> 
  </body> 
 </html>
