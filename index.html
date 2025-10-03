@@ -1,390 +1,668 @@
 <!DOCTYPE html>
 <html lang="en"> 
- <head> 
+<head> 
   <meta charset="UTF-8" /> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
-  <title>Dark Fire Login</title> 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"/> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/> 
+  <title>Quantum AI Predictor</title> 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style> 
-    * { margin: 0; padding: 0; box-sizing: border-box; } 
-    body { 
-      background-color: #121212; 
-      color: white; 
-      font-family: 'Poppins', sans-serif; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      text-align: center; 
-      padding: 10px; 
-      position: relative; 
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
-    } 
-    .container { 
-      width: 90%; 
-      max-width: 400px; 
-      padding: 25px; 
-      background: rgba(26, 32, 44, 0.9); 
-      border-radius: 15px; 
-      box-shadow: 0 0 25px rgba(101, 73, 255, 0.5); 
-      position: relative; 
-      backdrop-filter: blur(5px); 
-      border: 1px solid rgba(255, 255, 255, 0.1); 
-    } 
-
-    h1 { 
-      font-size: 26px; 
-      color: #6e45e2; 
-      font-weight: bold; 
-      text-shadow: 0 0 10px rgba(110, 69, 226, 0.5); 
-      margin-bottom: 15px; 
-      background: linear-gradient(to right, #6e45e2, #88d3ce); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-    } 
-
-    input { 
-      width: 100%; 
-      padding: 12px; 
-      margin: 10px 0; 
-      border: 2px solid #6e45e2; 
-      border-radius: 8px; 
-      background: rgba(18, 18, 18, 0.8); 
-      color: white; 
-      text-align: center; 
-      font-size: 16px; 
-      box-shadow: 0 0 10px rgba(110, 69, 226, 0.3); 
-      transition: all 0.3s ease; 
-    } 
-
-    input:focus { 
-      outline: none; 
-      border-color: #88d3ce; 
-      box-shadow: 0 0 15px rgba(136, 211, 206, 0.5); 
-    } 
-
-    button { 
-      width: 100%; 
-      padding: 12px; 
-      border: none; 
-      border-radius: 8px; 
-      background: linear-gradient(to right, #6e45e2, #88d3ce); 
-      color: white; 
-      font-size: 18px; 
-      cursor: pointer; 
-      box-shadow: 0 0 15px rgba(110, 69, 226, 0.4); 
-      transition: all 0.3s ease; 
-      margin-top: 10px; 
-      font-weight: bold; 
-    } 
-
-    button:hover { 
-      background: linear-gradient(to right, #5d36d1, #7ac5c0); 
-      box-shadow: 0 0 20px rgba(110, 69, 226, 0.6); 
-      transform: translateY(-2px); 
-    } 
-
-    .error { 
-      color: #ff4d4d; 
-      margin-top: 10px; 
-      display: none; 
-      text-shadow: 0 0 5px rgba(255, 77, 77, 0.3); 
-    } 
-
-    .success { 
-      color: #4dff88; 
-      margin-top: 10px; 
-      display: none; 
-      font-weight: bold; 
-      text-shadow: 0 0 10px rgba(77, 255, 136, 0.3); 
-    } 
-
-    #uid-verification, #prediction-page, #timeout-page, #key-activation { 
-      display: none; 
-    } 
-
-    .box { 
-      display: inline-block; 
-      padding: 8px 12px; 
-      font-size: 18px; 
-      font-weight: bold; 
-      margin: 5px; 
-      border-radius: 5px; 
-      border: 2px solid #6e45e2; 
-      text-shadow: 0 0 10px rgba(110, 69, 226, 0.5); 
-      background: rgba(18, 18, 18, 0.5); 
-    } 
-
-    .period-box { color: #ffd700; } 
-    .big { color: #88d3ce; } 
-    .small { color: #ffa447; } 
-    .number-box { color: #6e45e2; } 
-
-    .predict-btn { 
-      padding: 10px 15px; 
-      font-size: 14px; 
-      background: white; 
-      color: #6e45e2; 
-      font-weight: bold; 
-      border: none; 
-      cursor: pointer; 
-      margin-top: 15px; 
-      border-radius: 5px; 
-      transition: all 0.3s ease; 
-    } 
-
-    .predict-btn:hover { 
-      background: #f0f0f0; 
-      transform: scale(1.05); 
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); 
-    } 
-
-    #live-result { 
-      font-size: 14px; 
-      font-weight: bold; 
-      color: #88d3ce; 
-      margin-top: 10px; 
-    } 
-
-    .extra-buttons a button { 
-      margin-top: 12px; 
-      width: 100%; 
-      padding: 12px; 
-      font-size: 16px; 
-      font-weight: bold; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      transition: all 0.3s ease; 
-    } 
-
-    .register-btn { 
-      background: linear-gradient(to right, #6e45e2, #88d3ce); 
-      color: white; 
-    } 
-
-    .telegram-btn { 
-      background: linear-gradient(to right, #1e88e5, #0d47a1); 
-      color: white; 
-    } 
-
-    .video-btn { 
-      background: linear-gradient(to right, #ff416c, #ff4b2b); 
-      color: white; 
-    } 
-
-    .admin-btn { 
-      background: linear-gradient(to right, #654ea3, #eaafc8); 
-      color: white; 
-    } 
-
-    .extra-buttons a button:hover { 
-      transform: translateY(-3px); 
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
-    } 
-
-    .loading { 
-      display: inline-block; 
-      width: 20px; 
-      height: 20px; 
-      border: 3px solid rgba(255,255,255,.1); 
-      border-radius: 50%; 
-      border-top-color: #6e45e2; 
-      animation: spin 1s ease-in-out infinite; 
-      margin-left: 10px; 
-    } 
-
-    @keyframes spin { 
-      to { transform: rotate(360deg); } 
-    } 
-
-    .time-display { 
-      position: absolute; 
-      top: 10px; 
-      right: 10px; 
-      font-size: 14px; 
-      color: #88d3ce; 
-      text-shadow: 0 0 5px rgba(136, 211, 206, 0.5); 
-      background: rgba(26, 32, 44, 0.7); 
-      padding: 5px 10px; 
-      border-radius: 20px; 
-      border: 1px solid rgba(136, 211, 206, 0.3); 
-    } 
-
-    #timeout-page { 
-      text-align: center; 
-    } 
-
-    #timeout-page h1 { 
-      color: #ff4d4d; 
-      text-shadow: 0 0 10px rgba(255, 77, 77, 0.5); 
-      background: linear-gradient(to right, #ff4d4d, #ff7676); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-    } 
-
-    .getout-btn { 
-      background: linear-gradient(to right, #ff4d4d, #ff7676); 
-      color: white; 
-      font-weight: bold; 
-      margin-top: 20px; 
-      box-shadow: 0 0 15px rgba(255, 77, 77, 0.4); 
-    } 
-
-    .getout-btn:hover { 
-      background: linear-gradient(to right, #ff3636, #ff6363); 
-      transform: translateY(-2px); 
+    :root {
+      --primary: #00f5ff;
+      --secondary: #ff00e6;
+      --accent: #00ff9d;
+      --dark: #0a0a1a;
+      --darker: #050510;
+      --card-bg: rgba(15, 15, 35, 0.9);
+      --text: #ffffff;
+      --text-secondary: #b0b0d0;
     }
-
-    /* HTML 2 Styles */
-    .header {
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent;
+    } 
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+    
+    body { 
+      background-color: var(--darker);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
       text-align: center;
-      margin-bottom: 25px;
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 230, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 255, 157, 0.1) 0%, transparent 50%);
+      z-index: -1;
+    }
+    
+    .glow {
+      position: fixed;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.4;
+      z-index: -1;
+    }
+    
+    .glow-1 {
+      background: var(--primary);
+      top: -30px;
+      left: -30px;
+    }
+    
+    .glow-2 {
+      background: var(--secondary);
+      bottom: -30px;
+      right: -30px;
+    }
+    
+    .container { 
+      width: 100%;
+      max-width: 360px;
+      padding: 20px 15px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 0 15px rgba(0, 245, 255, 0.1);
+      position: relative;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
     }
 
     .logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
-      border-radius: 20px;
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 15px;
-      font-size: 32px;
+      font-size: 28px;
       color: white;
-      box-shadow: 0 4px 12px rgba(110, 69, 226, 0.15);
-      transform: rotate(10deg);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+      position: relative;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    h1 { 
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 12px rgba(0, 245, 255, 0.3);
+      letter-spacing: 0.5px;
+      line-height: 1.2;
     }
 
     .subtitle {
-      font-size: 14px;
-      color: #b0b0d0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 15px;
+      line-height: 1.3;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #b0b0d0;
-    }
-
-    #timer {
+    input { 
+      width: 100%; 
+      padding: 14px 12px;
+      margin: 8px 0;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
       text-align: center;
-      margin-top: 15px;
       font-size: 14px;
-      color: #88d3ce;
-      padding: 12px;
-      background: rgba(18, 18, 18, 0.5);
-      border-radius: 8px;
-      border: 1px solid rgba(136, 211, 206, 0.3);
+      transition: all 0.3s ease;
+      font-weight: 500;
     }
 
-    .success-icon {
-      color: #4dff88;
-      font-size: 28px;
-      margin-bottom: 12px;
+    input:focus { 
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.3);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    button { 
+      width: 100%; 
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 245, 255, 0.3);
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    button:active { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 245, 255, 0.5);
+    }
+    
+    button:active::before {
+      left: 100%;
+    }
+
+    .error { 
+      color: #ff4d4d;
+      margin-top: 8px;
+      display: none;
+      text-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+      font-size: 12px;
+    }
+
+    .success { 
+      color: var(--accent);
+      margin-top: 8px;
+      display: none;
+      font-weight: 600;
+      text-shadow: 0 0 6px rgba(0, 255, 157, 0.5);
+      font-size: 12px;
+    }
+
+    #uid-verification, #prediction-page, #timeout-page, #key-activation { 
+      display: none;
+    }
+
+    .prediction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    
+    .prediction-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+    }
+    
+    .prediction-card h3 {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+    
+    .prediction-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      text-shadow: 0 0 6px rgba(0, 245, 255, 0.5);
+    }
+
+    .predict-btn { 
+      padding: 12px 16px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      font-weight: 600;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      margin-top: 12px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .predict-btn:active { 
+      background: rgba(0, 245, 255, 0.1);
+      transform: scale(1.03);
+      box-shadow: 0 0 12px rgba(0, 245, 255, 0.3);
+    }
+
+    #live-result { 
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 10px;
+      text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+    }
+
+    .extra-buttons {
+      margin-top: 15px;
+    }
+    
+    .extra-buttons a {
+      text-decoration: none;
+      display: block;
+    }
+    
+    .extra-buttons a button { 
+      margin-top: 6px;
+      width: 100%;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-btn { 
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: var(--dark);
+    }
+
+    .telegram-btn { 
+      background: linear-gradient(to right, #1e88e5, #0d47a1);
+      color: white;
+    }
+
+    .video-btn { 
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+    }
+
+    .admin-btn { 
+      background: linear-gradient(to right, #654ea3, #eaafc8);
+      color: white;
+    }
+
+    .extra-buttons a button:active { 
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .loading { 
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,.1);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 6px;
+    }
+
+    @keyframes spin { 
+      to { transform: rotate(360deg); }
+    }
+
+    .time-display { 
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      color: var(--primary);
+      text-shadow: 0 0 5px rgba(0, 245, 255, 0.5);
+      background: rgba(15, 15, 35, 0.8);
+      padding: 5px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    #timeout-page { 
+      text-align: center;
+    }
+
+    #timeout-page h1 { 
+      color: #ff4d4d;
+      text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+      background: linear-gradient(to right, #ff4d4d, #ff7676);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .getout-btn { 
+      background: linear-gradient(to right, #ff4d4d, #ff7676);
+      color: white;
+      font-weight: 700;
+      margin-top: 15px;
+      box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
+    }
+
+    .getout-btn:active { 
+      background: linear-gradient(to right, #ff3636, #ff6363);
+      transform: translateY(-2px);
     }
 
     .badge {
       position: absolute;
-      top: 15px;
-      right: 15px;
-      background: linear-gradient(135deg, #6e45e2 0%, #88d3ce 100%);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 50px;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--dark);
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 10px;
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    }
+
+    .success-icon {
+      color: var(--accent);
+      font-size: 35px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 12px rgba(0, 255, 157, 0.7);
+    }
+
+    .feature-list {
+      text-align: left;
+      margin: 12px 0;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      color: var(--text-secondary);
       font-size: 12px;
-      font-weight: 600;
+    }
+    
+    .feature-item i {
+      color: var(--accent);
+      margin-right: 6px;
+      font-size: 12px;
+      min-width: 14px;
+    }
+    
+    .footer {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    
+    /* Small phone optimization */
+    @media (max-width: 340px) {
+      .container {
+        padding: 15px 12px;
+        max-width: 320px;
+      }
+      
+      .logo {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      input, button {
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+      
+      .prediction-grid {
+        gap: 8px;
+      }
+      
+      .prediction-card {
+        padding: 8px;
+      }
+      
+      .prediction-value {
+        font-size: 14px;
+      }
+    }
+    
+    /* Very small phones */
+    @media (max-width: 300px) {
+      body {
+        padding: 8px;
+      }
+      
+      .container {
+        padding: 12px 10px;
+      }
+      
+      h1 {
+        font-size: 18px;
+      }
+      
+      .logo {
+        width: 55px;
+        height: 55px;
+        font-size: 22px;
+      }
+    }
+    
+    /* Prevent zoom on input focus */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px;
+      }
+    }
+    
+    /* Ensure all content fits */
+    .scroll-container {
+      max-height: 85vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scroll-container {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
     }
   </style> 
- </head> 
- <body> 
-  <div class="time-display" id="time-display">00:00</div> 
+</head> 
+<body> 
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  
+  <div class="time-display" id="time-display">00:00</div>
 
-  <!-- Key Activation Page (HTML 2 System) -->
-  <div id="key-activation" class="container">
+  <!-- Key Activation Page -->
+  <div id="key-activation" class="container scroll-container">
     <div class="badge">PREMIUM</div>
     
-    <div class="header">
-      <div class="logo">
-        <i class="fas fa-robot"></i>
-      </div>
-      <h1>Lottery Tricks Ai Predition</h1>
-      <div class="subtitle">Intelligent Forecast System</div>
+    <div class="logo">
+      <i class="fas fa-robot"></i>
     </div>
     
-    <div class="form-group">
-      <label for="keyInput">Access Key</label>
-      <input type="text" id="keyInput" placeholder="Enter your premium access key">
+    <h1>QUANTUM AI PREDICTOR</h1>
+    <div class="subtitle">Advanced Neural Network Forecasting</div>
+    
+    <div class="feature-list">
+      <div class="feature-item">
+        <i class="fas fa-brain"></i>
+        <span>AI-Powered Predictions</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-bolt"></i>
+        <span>Real-time Analysis</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>Premium Security</span>
+      </div>
     </div>
+    
+    <input type="text" id="keyInput" placeholder="Enter Premium Access Key">
     
     <button onclick="activateKey()">
-      <i class="fas fa-key"></i> ACTIVATE ACCESS
+      <i class="fas fa-key"></i> ACTIVATE QUANTUM ACCESS
     </button>
     
-    <div id="timer"></div>
+    <div id="timer" class="timer" style="margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 11px;"></div>
     
     <div id="content">
       <div class="success-icon">
         <i class="fas fa-check-circle"></i>
       </div>
-      <div style="margin-bottom: 15px; font-weight: 500;">Premium Access Granted!</div>
-      <button onclick="showUidVerification()" style="background: linear-gradient(135deg, #4dff88 0%, #27ae60 100%);">
-        <i class="fas fa-chart-line"></i> VIEW PREDICTIONS
+      <h3 style="margin-bottom: 6px; font-size: 16px;">QUANTUM ACCESS GRANTED</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 12px;">Neural network activated successfully</p>
+      <button onclick="showUidVerification()" style="background: linear-gradient(135deg, var(--accent), #27ae60);">
+        <i class="fas fa-rocket"></i> LAUNCH PREDICTIONS
       </button>
     </div>
 
     <div class="extra-buttons">
       <a href="https://cklottery.cc/#/register?invitationCode=81487219676" target="_blank">
-        <button class="register-btn">Register</button>
+        <button class="register-btn">
+          <i class="fas fa-user-plus"></i> Register Account
+        </button>
       </a>
       <a href="https://t.me/PGmoney67800" target="_blank">
-        <button class="telegram-btn">Telegram Channel</button>
+        <button class="telegram-btn">
+          <i class="fab fa-telegram"></i> Telegram Channel
+        </button>
       </a>
       <a href="https://t.me/colourtradingincome2" target="_blank">
-        <button class="video-btn">Deposite / Withdraw Video</button>
+        <button class="video-btn">
+          <i class="fas fa-video"></i> Tutorial Videos
+        </button>
       </a>
       <a href="https://t.me/paunggyi111" target="_blank">
-        <button class="admin-btn">Admin Contact</button>
+        <button class="admin-btn">
+          <i class="fas fa-headset"></i> Support Contact
+        </button>
       </a>
     </div>
     
-    <div class="footer" style="margin-top: 25px; text-align: center; font-size: 12px; color: #95a5a6;">CREDITS BY PYAUNGGYI</div>
+    <div class="footer">
+      QUANTUM AI SYSTEM • CREDITS BY PYAUNGGYI
+    </div>
   </div>
 
   <!-- UID Verification -->
   <div id="uid-verification" class="container"> 
-    <h1>Game UID Verification</h1> 
+    <div class="logo">
+      <i class="fas fa-id-card"></i>
+    </div>
+    
+    <h1>IDENTITY VERIFICATION</h1>
+    <div class="subtitle">Verify your account to continue</div>
+    
     <input type="text" id="uid" placeholder="Enter UID (4-6 digits)" maxlength="6"> 
-    <button onclick="verifyUID()">Verify</button> 
+    
+    <button onclick="verifyUID()">
+      <i class="fas fa-fingerprint"></i> VERIFY IDENTITY
+    </button> 
+    
     <p class="error" id="uid-error">UID must be 4-6 digits!</p> 
     <p class="success" id="uid-success">Verification Successful! <span class="loading"></span></p> 
   </div> 
 
   <!-- Prediction Page -->
   <div id="prediction-page" class="container"> 
-    <h1>CRD BY PYAUNGGYI</h1> 
-    <p id="result" class="result">PERIOD: <span class="box period-box">--</span></p> 
-    <p id="signal" class="signal">TRX SIGNAL: <span class="box">--</span></p> 
-    <p id="prediction" class="prediction">PREDICTED NUMBERS: <span class="box number-box">--/--</span></p> 
-    <p id="live-result">LIVE UPDATING...</p> 
-    <button class="predict-btn" onclick="fetchPrediction()">Predict</button> 
+    <div class="logo">
+      <i class="fas fa-chart-line"></i>
+    </div>
+    
+    <h1>QUANTUM PREDICTIONS</h1>
+    <div class="subtitle">Live AI Analysis • Neural Network Active</div>
+    
+    <div class="prediction-grid">
+      <div class="prediction-card">
+        <h3>PERIOD</h3>
+        <div id="result" class="prediction-value">--</div>
+      </div>
+      <div class="prediction-card">
+        <h3>TRX SIGNAL</h3>
+        <div id="signal" class="prediction-value">--</div>
+      </div>
+    </div>
+    
+    <div class="prediction-card">
+      <h3>PREDICTED NUMBERS</h3>
+      <div id="prediction" class="prediction-value">-- / --</div>
+    </div>
+    
+    <p id="live-result">NEURAL NETWORK ANALYZING...</p> 
+    
+    <button class="predict-btn" onclick="fetchPrediction()">
+      <i class="fas fa-sync-alt"></i> REFRESH PREDICTION
+    </button> 
   </div> 
 
   <!-- Timeout Page -->
   <div id="timeout-page" class="container"> 
-    <h1>Session Expired</h1> 
-    <p>Your premium session has ended.</p> 
-    <button class="getout-btn" onclick="resetApplication()">GET OUT</button> 
+    <div class="logo">
+      <i class="fas fa-clock"></i>
+    </div>
+    
+    <h1>SESSION EXPIRED</h1>
+    <div class="subtitle">Quantum access period has ended</div>
+    
+    <p style="margin: 12px 0; color: var(--text-secondary); font-size: 12px;">Renew your premium access to continue using AI predictions</p>
+    
+    <button class="getout-btn" onclick="resetApplication()">
+      <i class="fas fa-redo"></i> RENEW ACCESS
+    </button> 
   </div> 
 
   <script>
@@ -408,19 +686,16 @@
     let timerInterval;
     let predictionInterval;
     let seconds = 0;
-    const MAX_TIME = 600; // 10 minutes in seconds
+    const MAX_TIME = 600;
 
     // Start when page loads
     window.onload = function() {
-      // Show key activation page first
       document.getElementById("key-activation").style.display = "block";
       
-      // Check if there's an active session
       if (expireTime && Date.now() < expireTime) {
         document.getElementById('content').style.display = 'block';
         startSession();
       } else {
-        // If no active session, clear any stored data
         localStorage.removeItem('expireTime');
       }
       
@@ -457,7 +732,7 @@
       location.reload();
     }
 
-    // HTML 2 Key Activation Functions
+    // Key Activation Functions
     function activateKey() {
       const key = document.getElementById('keyInput').value.trim().toUpperCase();
       if (!key) {
@@ -465,7 +740,6 @@
         return;
       }
 
-      // Show loading state
       const btn = document.querySelector('#key-activation button');
       const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFYING...';
@@ -488,17 +762,16 @@
           
           db.ref('keys/' + key).update({ used: true });
           
-          // Show success
           document.getElementById('content').style.display = 'block';
-          alert(`Key Activated! Added ${data.duration} minutes`);
+          alert(`Quantum Access Activated! Added ${data.duration} minutes`);
           startSession();
         } else {
-          alert("Invalid Key");
+          alert("Invalid Quantum Key");
         }
       }).catch(error => {
         btn.innerHTML = originalText;
         btn.disabled = false;
-        alert("Connection error. Please try again.");
+        alert("Network Error. Please try again.");
         console.error(error);
       });
     }
@@ -515,11 +788,10 @@
       
       if (remaining <= 0) {
         clearInterval(timerInterval);
-        document.getElementById('timer').textContent = "Premium expired";
+        document.getElementById('timer').textContent = "Quantum Access Expired";
         document.getElementById('content').style.display = 'none';
         localStorage.removeItem('expireTime');
         
-        // Show timeout page if user was in prediction mode
         if (document.getElementById("prediction-page").style.display === "block") {
           document.getElementById("prediction-page").style.display = "none";
           document.getElementById("timeout-page").style.display = "block";
@@ -531,7 +803,7 @@
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
       
-      document.getElementById('timer').textContent = `Premium expires in: ${hours}h ${minutes}m ${seconds}s`;
+      document.getElementById('timer').textContent = `Quantum Access: ${hours}h ${minutes}m ${seconds}s`;
     }
 
     function showUidVerification() {
@@ -544,20 +816,16 @@
       const uidError = document.getElementById("uid-error");
       const uidSuccess = document.getElementById("uid-success");
 
-      // Hide previous messages 
       uidError.style.display = "none";
       uidSuccess.style.display = "none";
 
-      // Check UID length (4-6 digits) 
       if (uid.length < 4 || uid.length > 6 || !/^\d+$/.test(uid)) {
         uidError.style.display = "block";
         return;
       }
 
-      // Show success message 
       uidSuccess.style.display = "block";
 
-      // After 3 seconds, proceed to prediction page 
       setTimeout(() => {
         document.getElementById("uid-verification").style.display = "none";
         document.getElementById("prediction-page").style.display = "block";
@@ -603,19 +871,20 @@
 
           let { bigSmallPrediction, predictedNumbers } = periodResults[issueNumber];
 
-          document.getElementById("result").innerHTML = `PERIOD: <span class="box period-box">${issueNumber}</span>`;
-          document.getElementById("signal").innerHTML = `TRX SIGNAL: <span class="box ${bigSmallPrediction.toLowerCase()}">${bigSmallPrediction}</span>`;
-          document.getElementById("prediction").innerHTML = `PREDICTED NUMBERS: <span class="box number-box">${predictedNumbers}</span>`;
-          document.getElementById("live-result").innerHTML = "✅ LIVE DATA UPDATED!";
+          document.getElementById("result").textContent = issueNumber;
+          document.getElementById("signal").textContent = bigSmallPrediction;
+          document.getElementById("signal").className = `prediction-value ${bigSmallPrediction.toLowerCase()}`;
+          document.getElementById("prediction").textContent = predictedNumbers;
+          document.getElementById("live-result").innerHTML = "✅ QUANTUM ANALYSIS COMPLETE";
         } else {
-          document.getElementById("live-result").innerHTML = "⚠️ ERROR! Could not fetch data.";
+          document.getElementById("live-result").innerHTML = "⚠️ QUANTUM NETWORK ERROR";
         }
       })
       .catch(error => {
-        document.getElementById("live-result").innerHTML = "⚠️ ERROR! Network or API issue.";
+        document.getElementById("live-result").innerHTML = "⚠️ QUANTUM CONNECTION FAILED";
         console.error("API Fetch Error:", error);
       });
     }
   </script> 
- </body> 
+</body> 
 </html>
